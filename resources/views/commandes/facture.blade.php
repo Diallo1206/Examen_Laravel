@@ -39,7 +39,7 @@
                 <td>{{ $element->livre->titre }}</td>
                 <td>{{ $element->quantite }}</td>
                 <td>{{ number_format($element->prix, 2, ',', ' ') }}€</td>
-                <td>{{ number_format($element->prix * $element->quantite, 2, ',', ' ') }}€</td>
+                <td>{{ number_format($element->prix * $element->quantite, 2, ',', ' ') }}XOF</td>
             </tr>
         @endforeach
         </tbody>
@@ -48,11 +48,11 @@
     <h3>Paiements</h3>
     <ul>
         @foreach($commande->paiement as $paiement)
-            <li>{{ $paiement->methode_paiement }} - {{ number_format($paiement->montant, 2, ',', ' ') }}€ ({{ $paiement->created_at->format('d M Y') }})</li>
+            <li>{{ $paiement->methode_paiement }} - {{ number_format($paiement->montant, 2, ',', ' ') }}XOF ({{ $paiement->created_at->format('d M Y') }})</li>
         @endforeach
     </ul>
 
-    <p class="total">Montant Total: {{ number_format($commande->montant_total, 2, ',', ' ') }}€</p>
+    <p class="total">Montant Total: {{ number_format($commande->montant_total, 2, ',', ' ') }}XOF</p>
 </div>
 </body>
 </html>

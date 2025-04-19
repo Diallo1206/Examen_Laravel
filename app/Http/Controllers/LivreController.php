@@ -29,13 +29,13 @@ class LivreController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $livre = Livre::create($request->all());
+        $data = $request->all();
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images/livres', 'public');
-            $livre->image = $imagePath;
-            $livre->save();
+            $data['image'] = $request->file('image')->store('images/livres', 'public');
         }
+
+        Livre::create($data);
 
         return redirect()->route('livres.index')->with('success', 'Livre ajouté avec succès!');
     }
@@ -61,13 +61,13 @@ class LivreController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $livre->update($request->all());
+        $data = $request->all();
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images/livres', 'public');
-            $livre->image = $imagePath;
-            $livre->save();
+            $data['image'] = $request->file('image')->store('images/livres', 'public');
         }
+
+        $livre->update($data);
 
         return redirect()->route('livres.index')->with('success', 'Livre mis à jour avec succès!');
     }
@@ -78,17 +78,3 @@ class LivreController extends Controller
         return redirect()->route('livres.index')->with('success', 'Livre supprimé avec succès!');
     }
 }
-//         $commande->produits()->detach(); // Détacher tous les produits existants
-//         foreach ($request->produit_id as $produitId) {
-//             $commande->produits()->attach($produitId, ['quantite' => 1, 'prix' => Livre::find($produitId)->prix]);
-//         }
-//
-//         return redirect()->route('commandes.index')->with('success', 'Commande mise à jour avec succès!');
-//     }
-//     }
-//         return redirect()->route('commandes.index')->with('success', 'Commande supprimée avec succès!');
-//     }
-//     }
-//     }
-//         return redirect()->route('commandes.index')->with('success', 'Commande supprimée avec succès!');
-//     }

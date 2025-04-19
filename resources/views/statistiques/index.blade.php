@@ -10,7 +10,7 @@
                 <div class="card text-white bg-success shadow">
                     <div class="card-body">
                         <h5 class="card-title">💰 Recettes du jour</h5>
-                        <p class="display-6">{{ number_format($recettes, 2, ',', ' ') }} €</p>
+                        <p class="display-6">{{ number_format($recettes, 2, ',', ' ') }} XOF</p>
                     </div>
                 </div>
             </div>

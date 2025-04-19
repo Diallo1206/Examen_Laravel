@@ -9,14 +9,19 @@ class Commande extends Model
 {
     use HasFactory;
 
-    // Les attributs qui peuvent être assignés en masse
+
+
     protected $fillable = [
         'client_id',
-        'status', // Le statut de la commande (ex: en attente, expédiée, etc.)
+        'date_commande',
         'montant',
-        'date_paiement',
+        'montant_total',
+
     ];
-    public function elements()
+
+
+
+public function elements()
     {
         return $this->hasMany(CommandeElement::class, 'commande_id');
     }

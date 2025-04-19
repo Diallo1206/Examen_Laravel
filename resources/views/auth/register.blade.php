@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="min-h-screen flex items-center justify-center bg-cover bg-center px-4 py-8" style="background-image: url('{{ asset('storage/images/1740016812712.jpg') }}');">
-        <div class="w-full max-w-3xl bg-white bg-opacity-25 backdrop-blur-lg shadow-2xl rounded-2xl border border-white/30 p-10 text-gray-800">
+        <div class="w-full max-w-3xl bg-black bg-opacity-25 backdrop-blur-lg shadow-2xl rounded-2xl border border-white/30 p-10 text-gray-800">
 
             <!-- Titre et intro -->
             <div class="text-center mb-8">

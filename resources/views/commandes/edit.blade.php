@@ -5,7 +5,7 @@
     <form action="{{ route('commandes.update', $commande->id) }}" method="POST">
         @csrf
         @method('PUT')
-        
+
         <div class="form-group">
             <label for="client_id">Client</label>
             <select name="client_id" id="client_id" class="form-control">
@@ -19,7 +19,7 @@
             <label for="produit_id">Produit</label>
             <select name="produit_id[]" id="produit_id" class="form-control" multiple>
                 @foreach($livres as $livre)
-                    <option value="{{ $livre->id }}" @if(in_array($livre->id, $commande->produits->pluck('id')->toArray())) selected @endif>{{ $livre->titre }} - {{ $livre->prix }}€</option>
+                    <option value="{{ $livre->id }}" @if(in_array($livre->id, $commande->produits->pluck('id')->toArray())) selected @endif>{{ $livre->titre }} - {{ $livre->prix }}XOF</option>
                 @endforeach
             </select>
         </div>

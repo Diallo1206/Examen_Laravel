@@ -42,7 +42,7 @@
                                             <h5 class="card-title fw-semibold text-dark">Titre : {{ $livre->titre }}</h5>
                                             <p class="text-muted mb-0">Auteur : {{ $livre->auteur }}</p>
                                             <p class="text-muted mb-0">Stock restant : {{ $livre->stock }}</p>
-                                            <p class="text-success fw-bold mb-2">Prix : {{ number_format($livre->prix, 2, ',', ' ') }} €</p>
+                                            <p class="text-success fw-bold mb-2">Prix : {{ number_format($livre->prix, 2, ',', ' ') }} XOF</p>
 
                                             <div class="form-check mb-2">
                                                 <input type="checkbox" name="produit_id[]" value="{{ $livre->id }}"

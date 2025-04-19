@@ -3,39 +3,119 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bibliothèque en ligne</title>
+    <title>SUNU Bibliothèque</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white">
-<header class="bg-white dark:bg-gray-800 shadow">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold">📚 Ma Bibliothèque</h1>
-        <nav class="space-x-4">
-            <a href="{{ url('/') }}" class="hover:underline">Accueil</a>
-            <a href="{{ route('catalogue') }}" class="hover:underline">Catalogue</a>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
-            @auth
-                <a href="{{ url('/dashboard') }}" class="hover:underline">Dashboard</a>
-            @else
-                <a href="{{ route('login') }}" class="hover:underline">Connexion</a>
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="hover:underline">Inscription</a>
-                @endif
-            @endauth
-        </nav>
-    </div>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .header {
+            background-color: #1e293b;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover {
+            color: #38bdf8;
+        }
+
+        .hero {
+            padding: 6rem 2rem;
+            text-align: center;
+            background-color: #e2e8f0;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            color: #475569;
+        }
+
+        .hero a {
+            background-color: #38bdf8;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .hero a:hover {
+            background-color: #0ea5e9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #1e293b;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>📚 SUNU Bibliothèque</h1>
+    <nav class="nav">
+        <a href="{{ url('/') }}">Accueil</a>
+        <a href="{{ route('catalogue') }}">Catalogue</a>
+        @auth
+            <a href="{{ url('/dashboard') }}">Dashboard</a>
+        @else
+            <a href="{{ route('login') }}">Connexion</a>
+            @if (Route::has('register'))
+                <a href="{{ route('register') }}">Inscription</a>
+            @endif
+        @endauth
+    </nav>
 </header>
 
-<main class="mt-10 text-center">
-    <h2 class="text-4xl font-bold mb-4">Bienvenue sur notre bibliothèque en ligne</h2>
-    <p class="text-lg mb-6">Découvrez, explorez et achetez des livres en quelques clics !</p>
-    <a href="{{ route('catalogue') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full text-lg">
-        Voir le catalogue
-    </a>
+<main class="hero">
+    <h2>Bienvenue dans l'univers du savoir</h2>
+    <p>Explorez notre bibliothèque numérique, découvrez des ouvrages captivants, et vivez une nouvelle expérience de lecture.</p>
+    <a href="{{ route('catalogue') }}">Découvrir le catalogue</a>
 </main>
 
-<footer class="mt-20 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-    &copy; {{ date('Y') }} Ma Bibliothèque. Tous droits réservés.
-</footer>
+{{--<footer class="footer">--}}
+{{--    &copy; {{ date('Y') }} SUNU Bibliothèque. Tous droits réservés.--}}
+{{--</footer>--}}
+
 </body>
 </html>

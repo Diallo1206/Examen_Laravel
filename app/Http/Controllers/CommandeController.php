@@ -41,7 +41,6 @@ class CommandeController extends Controller
     // Enregistrer une nouvelle commande
     public function store(Request $request)
     {
-        // 1️⃣ Validation des données
         $request->validate([
             'client_id'       => 'required|exists:clients,id',
             'produit_id'      => 'required|array|min:1',
@@ -52,7 +51,6 @@ class CommandeController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                // Création de la commande
                 $commande = new Commande();
                 $commande->client_id      = $request->client_id;
                 $commande->utilisateur_id = Auth::id();
@@ -63,7 +61,6 @@ class CommandeController extends Controller
                 $total = 0;
                 $elements = [];
 
-                // Parcours des produits sélectionnés
                 foreach ($request->produit_id as $i => $produitId) {
                     $livre = Livre::findOrFail($produitId);
                     $qteDemandee = (int) $request->quantite[$i];
@@ -72,28 +69,32 @@ class CommandeController extends Controller
                         throw new \Exception("Stock insuffisant pour « {$livre->titre} » ({$livre->stock} dispo).");
                     }
 
-                    $sousTotal = $livre->prix * $qteDemandee;
-                    $livre->decrement('stock', $qteDemandee);
+                    if ($livre->prix === null || $livre->prix <= 0) {
+                        throw new \Exception("Le prix du livre « {$livre->titre} » est invalide ({$livre->prix}).");
+                    }
 
-                    $total += $sousTotal;
+                    $livre->decrement('stock', $qteDemandee);
+                    $total += $livre->prix * $qteDemandee;
 
                     $elements[] = new CommandeElement([
                         'livre_id'  => $livre->id,
                         'quantite'  => $qteDemandee,
-                        'prix'      => $sousTotal,
+                        'prix'      => $livre->prix, // ✅ PRIX UNITAIRE !!
                     ]);
+
+                    //$total += $livre->prix * $qteDemandee;
+
                 }
 
-                // Mise à jour du total et enregistrement des éléments
-                $commande->update(['montant_total' => $total]);
                 $commande->elements()->saveMany($elements);
 
-                // Envoi du mail de confirmation
-                Mail::to($commande->client->email)
-                    ->send(new ConfirmationCommandeMail($commande));
+                $commande->montant_total = $total;
+                $commande->save();
+
+                Mail::to($commande->client->email)->send(new ConfirmationCommandeMail($commande));
             });
 
-            return redirect()->route('commandes.index')
+            return redirect()->route('commandes.show', Commande::latest()->first()->id)
                 ->with('success', 'Commande créée avec succès et stock mis à jour !');
 
         } catch (\Exception $e) {
@@ -101,6 +102,9 @@ class CommandeController extends Controller
                 ->with('error', 'Erreur lors de la création de la commande : ' . $e->getMessage());
         }
     }
+
+
+
 
 
 
@@ -121,11 +125,12 @@ class CommandeController extends Controller
     // Afficher le formulaire de modification d'une commande
     public function edit($id)
     {
-        $commande = Commande::with('clients')->findOrFail($id);
+        $commande = Commande::with('client')->findOrFail($id); // ← fix ici
         $clients = Client::all();
         $livres = Livre::all();
         return view('commandes.edit', compact('commande', 'clients', 'livres'));
     }
+
 
     // Mettre à jour les informations d'une commande
     public function update(Request $request, $id)
