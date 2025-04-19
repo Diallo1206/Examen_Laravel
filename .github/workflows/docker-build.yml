@@ -21,11 +21,11 @@ jobs:
 
       - name: 🛠️ Construction de l'image Docker
         run: |
-          docker build -t docker.io/abdoul1230/Bibliotheque:latest .
+          docker build -t docker.io/abdoul1230/bibliotheque:latest .
 
       - name: 🚀 Envoi de l'image vers Docker Hub
         run: |
-          docker push docker.io/abdoul1230/Bibliotheque:latest
+          docker push docker.io/abdoul1230/bibliotheque:latest
 
       - name: 🔒 Déconnexion de Docker Hub
         run: |
