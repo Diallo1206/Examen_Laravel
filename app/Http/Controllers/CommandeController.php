@@ -41,6 +41,7 @@ class CommandeController extends Controller
     // Enregistrer une nouvelle commande
     public function store(Request $request)
     {
+
         $request->validate([
             'client_id'       => 'required|exists:clients,id',
             'produit_id'      => 'required|array|min:1',
@@ -51,6 +52,8 @@ class CommandeController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
+
+
                 $commande = new Commande();
                 $commande->client_id      = $request->client_id;
                 $commande->utilisateur_id = Auth::id();
@@ -58,50 +61,54 @@ class CommandeController extends Controller
                 $commande->montant_total  = 0;
                 $commande->save();
 
+
+                $fusionProduits = [];
+                foreach ($request->produit_id as $i => $produitId) {
+                    $quantite = (int) $request->quantite[$i];
+                    if (isset($fusionProduits[$produitId])) {
+                        $fusionProduits[$produitId] += $quantite;
+                    } else {
+                        $fusionProduits[$produitId] = $quantite;
+                    }
+                }
+
                 $total = 0;
                 $elements = [];
 
-                foreach ($request->produit_id as $i => $produitId) {
+
+                foreach ($fusionProduits as $produitId => $quantite) {
                     $livre = Livre::findOrFail($produitId);
-                    $qteDemandee = (int) $request->quantite[$i];
 
-                    if ($livre->stock < $qteDemandee) {
-                        throw new \Exception("Stock insuffisant pour « {$livre->titre} » ({$livre->stock} dispo).");
+                    if ($livre->stock < $quantite) {
+                        throw new \Exception("Stock insuffisant pour le livre « {$livre->titre} » (stock dispo : {$livre->stock}).");
                     }
 
-                    if ($livre->prix === null || $livre->prix <= 0) {
-                        throw new \Exception("Le prix du livre « {$livre->titre} » est invalide ({$livre->prix}).");
-                    }
-
-                    $livre->decrement('stock', $qteDemandee);
-                    $total += $livre->prix * $qteDemandee;
+                    $livre->decrement('stock', $quantite);
 
                     $elements[] = new CommandeElement([
                         'livre_id'  => $livre->id,
-                        'quantite'  => $qteDemandee,
-                        'prix'      => $livre->prix, // ✅ PRIX UNITAIRE !!
+                        'quantite'  => $quantite,
+                        'prix'      => $livre->prix, // ✅ PRIX UNITAIRE
                     ]);
 
-                    //$total += $livre->prix * $qteDemandee;
-
+                    $total += $livre->prix * $quantite;
                 }
 
-                $commande->elements()->saveMany($elements);
 
-                $commande->montant_total = $total;
-                $commande->save();
+                $commande->elements()->saveMany($elements);
+                $commande->update(['montant_total' => $total]);
+
 
                 Mail::to($commande->client->email)->send(new ConfirmationCommandeMail($commande));
             });
 
-            return redirect()->route('commandes.show', Commande::latest()->first()->id)
-                ->with('success', 'Commande créée avec succès et stock mis à jour !');
+            return redirect()->route('commandes.index')->with('success', 'Commande enregistrée avec succès !');
 
         } catch (\Exception $e) {
-            return back()->withInput()
-                ->with('error', 'Erreur lors de la création de la commande : ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Erreur : ' . $e->getMessage());
         }
     }
+
 
 
 
